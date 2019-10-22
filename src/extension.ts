@@ -30,7 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// });
 
-	const provider2 = vscode.languages.registerCompletionItemProvider(supportedLanguages,
+	const variableProvider = vscode.languages.registerCompletionItemProvider(supportedLanguages,
 		{
 			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
 
@@ -66,30 +66,21 @@ export async function activate(context: vscode.ExtensionContext) {
 				cssProperties.delete(key);
 			}
 			else if (prop.value && prop.value.indexOf('--') > -1) {
-				prop.parsedValue = parseColor(prop.value, cssProperties)
+				prop.parsedValue = parseColor(prop.value, cssProperties);
 			}
 		});
 
 		return cssProperties;
-		// .filter(s => !!s.match(/(--[^:]+)/))
-		// 	.map(v => {
-		// 		const [variable, value] = v.split(':');
-		// 		return {
-		// 			key: variable.trim(),
-		// 			value: parseColor(v)
-		// 		}
-		// 	});
 	}
 
 	function parseCSS(str: string): ParsedCSSMap {
 		var css_rows = str.split('\n'); 
 
-		// filter out empty elements and strip ';'      
-		css_rows = css_rows.filter(function(x){ return x != '' }).map(function(x){ return x.trim().replace(';', '') });
+		css_rows = css_rows
+			.filter(x => x !== '')
+			.map(x => x.trim().replace(';', ''));
 
-		// create object
-		// remove first and last element
-		css_rows = css_rows.splice(1, css_rows.length - 2)
+		css_rows = css_rows.splice(1, css_rows.length - 2);
 		
 		let cssMap: ParsedCSSMap = new Map();
 
@@ -110,29 +101,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	function parseColor(str: string, props: ParsedCSSMap): string {
-		// const val = str.split(':').length ? str.split(':')[1] : '';
-		// if (val.match(/(#|rgb|hsl)/)) {
-		// 	return val.replace(';', '').trim();
-		// }
-
-		const m = str.match(/(\(--[^:|)]+)/)
+		const m = str.match(/(\(--[^:|)]+)/);
 		if (m) {
 			return props.get(m[0].replace('(', ''))!.value;
 		}
 
 		return str;
-		// const m = str.match(/(\(--[^:|)]+)/)
-		// return (m
-		// 	? m[0].replace('(', '').trim()
-		// 	: str.split(':')
-		// 		? str.split(':')[1].trim()
-		// 		: '').replace(/\;/, '');
 	}
 
-	context.subscriptions.push(provider2);
+	context.subscriptions.push(variableProvider);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() { }
 
-type ParsedCSSMap = Map<string, { value: string, parsedValue: string | undefined }>
+type ParsedCSSMap = Map<string, { value: string, parsedValue: string | undefined }>;
