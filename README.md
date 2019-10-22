@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # gobalcss README
 
 This is the README for your extension "gobalcss". After writing up a brief description, we recommend including the following sections.
@@ -63,3 +64,6 @@ Added features X, Y, and Z.
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+=======
+# vscode-global-cssvars
+>>>>>>> 8b8481c6e9cf4666f5a88bc29dc359cf99e663b5
