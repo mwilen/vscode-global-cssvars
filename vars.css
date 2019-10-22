@@ -1,0 +1,6 @@
+body {
+    --ui-color-grey: #eeeeee;
+    --ui-color-primary: #3d28f5;
+    --ui-text-color: @css { var(--ui-color-grey) };
+    background: #f00;
+}
