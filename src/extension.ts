@@ -9,10 +9,35 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log('Extension is now active!');
 	const supportedLanguages = ['css', 'styl', 'scss', 'sass', 'less', 'pcss'];
 
-	const c = await vscode.workspace
-		.openTextDocument(vscode.Uri.file('C:/Users/Mathias/dev/test/vars.css'));
+	const imports: string | string[] | undefined = vscode.workspace.getConfiguration('globalcss').get('imports');
+console.log(imports)
+	let files = [];
+
+	if (typeof imports === 'string' && imports.length) {
+		files = [imports];
+	}
+	else if (Array.isArray(imports) && imports.length){
+		files = imports;
+	}
+	else {
+		vscode.window.showWarningMessage('No imports defined for GlobalCss.', 'Go to settings')
+			.then(selection => {
+				if (selection === 'Go to settings') {
+					vscode.commands.executeCommand('workbench.action.openSettings', `@ext:mwilen.globalcss`);
+				}
+			});
+		return;
+	}
 	
-	const variables = parseVariables(c.getText());
+	let text = '';
+
+	for (const file of files) {
+		const textDocument = await vscode.workspace
+			.openTextDocument(vscode.Uri.file(file));
+		text += textDocument.getText() + '\n';
+	}
+	
+	const variables = parseVariables(text);
 
 	console.log(variables);
 
@@ -43,8 +68,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
 				const variablesCompletions: vscode.CompletionItem[] = [];
 				variables.forEach((variable, key) => {
-					const ci = new vscode.CompletionItem(key, vscode.CompletionItemKind.Color);
-					ci.documentation = variable.parsedValue ? variable.parsedValue : variable.value;
+					const realValue = variable.parsedValue ? variable.parsedValue : variable.value;
+					const ci = new vscode.CompletionItem(key, isColor(realValue)
+						? vscode.CompletionItemKind.Color
+						: vscode.CompletionItemKind.Variable);
+					ci.documentation = realValue;
 					if (variable.parsedValue) {
 						ci.detail = variable.value;
 					}
@@ -87,6 +115,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		for (const elem in css_rows)
 		{
 			var elem_parts = css_rows[elem].split(':');
+			if (elem_parts.length <= 1) {
+				continue;
+			}
 			var property_name = elem_parts[0].indexOf('--') > -1
 				? elem_parts[0].trim()
 				: elem_parts[0].trim().replace('-', '');
@@ -107,6 +138,18 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 
 		return str;
+	}
+
+	function isColor(str: string): boolean {
+		if (typeof str !== 'string') {
+			return false;
+		}
+
+		if (str.match(/(#|rgb[a]?)/)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	context.subscriptions.push(variableProvider);

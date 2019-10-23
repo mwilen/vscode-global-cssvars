@@ -1,7 +1,13 @@
 {
 	"name": "gobalcss",
-	"displayName": "gobalcss",
-	"description": "Set and make css globally available",
+	"displayName": "GobalCss",
+	"publisher": "mwilen",
+	"author": {
+		"name": "Mathias Wilén",
+		"email": "mathias.wilen@gmail.com",
+		"url": "https://github.com/mwilen"
+	},
+	"description": "Import and make css variables globally available",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.39.0"
@@ -10,13 +16,27 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:css"
+		"onLanguage:css",
+		"onLanguage:less",
+		"onLanguage:styl",
+		"onLanguage:scss",
+		"onLanguage:sass",
+		"onLanguage:pcss"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-			
-		]
+		],
+		"configuration": {
+			"title": "GobalCss",
+			"properties": {
+			  "globalcss.imports": {
+				"type": ["string", "array"],
+				"default": "",
+				"description": "Specify one or multiple paths to the file(s) containing css variables you wish to import."
+			  }
+			}
+		  }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
