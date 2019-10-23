@@ -1,6 +1,6 @@
 {
-	"name": "gobalcss",
-	"displayName": "GobalCss",
+	"name": "gobalcssvars",
+	"displayName": "GobalCssVars",
 	"publisher": "mwilen",
 	"author": {
 		"name": "Mathias Wilén",
@@ -28,7 +28,7 @@
 		"commands": [
 		],
 		"configuration": {
-			"title": "GobalCss",
+			"title": "GobalCssVars",
 			"properties": {
 			  "globalcss.imports": {
 				"type": ["string", "array"],

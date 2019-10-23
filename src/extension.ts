@@ -9,7 +9,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log('Extension is now active!');
 	const supportedLanguages = ['css', 'styl', 'scss', 'sass', 'less', 'pcss'];
 
-	const imports: string | string[] | undefined = vscode.workspace.getConfiguration('globalcss').get('imports');
+	const imports: string | string[] | undefined = vscode.workspace.getConfiguration('globalcssvars').get('imports');
 console.log(imports)
 	let files = [];
 
@@ -20,10 +20,10 @@ console.log(imports)
 		files = imports;
 	}
 	else {
-		vscode.window.showWarningMessage('No imports defined for GlobalCss.', 'Go to settings')
+		vscode.window.showWarningMessage('No imports defined for GlobalCssVars.', 'Go to settings')
 			.then(selection => {
 				if (selection === 'Go to settings') {
-					vscode.commands.executeCommand('workbench.action.openSettings', `@ext:mwilen.globalcss`);
+					vscode.commands.executeCommand('workbench.action.openSettings', `@ext:mwilen.globalcssvars`);
 				}
 			});
 		return;
