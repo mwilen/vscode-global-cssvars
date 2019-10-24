@@ -23,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			variables = await fetchCssVariables();
 		}
 		catch (e) {
-			showWarning('GlobalCSSVars imports could not be reloaded.' + e.message);
+			showWarning('GlobalCSSVars imports could not be reloaded. ' + e.message);
 			console.error(e);
 			return;
 		}
